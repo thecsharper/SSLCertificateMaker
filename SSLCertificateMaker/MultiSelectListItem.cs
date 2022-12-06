@@ -1,6 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.X509;
-
-namespace SSLCertificateMaker
+﻿namespace SSLCertificateMaker
 {
 	public class MultiSelectListItem<T>
 	{
