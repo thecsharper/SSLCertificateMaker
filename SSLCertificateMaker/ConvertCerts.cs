@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SSLCertificateMaker
@@ -38,11 +34,13 @@ namespace SSLCertificateMaker
 					if (string.Compare(fi.Extension, ".pfx", true) == 0 || string.Compare(fi.Extension, ".key", true) == 0)
 						allCerts.Add(new CertItem("[CA] " + fi.Name, fi.FullName));
 				}
+
 				foreach (FileInfo fi in new DirectoryInfo(MainForm.CERT_DIR).GetFiles())
 				{
 					if (string.Compare(fi.Extension, ".pfx", true) == 0 || string.Compare(fi.Extension, ".key", true) == 0)
 						allCerts.Add(new CertItem(fi.Name, fi.FullName));
 				}
+
 				cbConvertSource.Items.AddRange(allCerts.OrderBy(ci => ci.Name).ToArray());
 				SelectPreviouslySelected(previouslySelected, cbConvertSource);
 			}
@@ -56,13 +54,14 @@ namespace SSLCertificateMaker
 		{
 			if (previouslySelected != null)
 			{
-				for (int i = 0; i < cb.Items.Count; i++)
+				for (int i = 0; i < cb.Items.Count; i++) { 
 					if (cb.Items[i].ToString() == previouslySelected)
 					{
 						cb.SelectedIndex = i;
 						return;
 					}
-			}
+                }
+            }
 			if (cb.Items.Count > 0)
 				cb.SelectedIndex = 0;
 		}
@@ -71,8 +70,11 @@ namespace SSLCertificateMaker
 			foreach (KeyValuePair<string, CertConversionHandler> kvp in handlers)
 			{
 				if (kvp.Value.IsAllowedSource(sourcePath))
-					return kvp.Value;
+				{
+                    return kvp.Value;
+                }
 			}
+
 			return null;
 		}
 
