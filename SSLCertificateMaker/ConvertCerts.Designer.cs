@@ -66,7 +66,7 @@
 			this.cbConvertSource.Name = "cbConvertSource";
 			this.cbConvertSource.Size = new System.Drawing.Size(332, 21);
 			this.cbConvertSource.TabIndex = 2;
-			this.cbConvertSource.SelectedIndexChanged += new System.EventHandler(this.cbConvertSource_SelectedIndexChanged);
+			this.cbConvertSource.SelectedIndexChanged += new System.EventHandler(this.CbConvertSource_SelectedIndexChanged);
 			// 
 			// btnConvert
 			// 
@@ -76,7 +76,7 @@
 			this.btnConvert.TabIndex = 3;
 			this.btnConvert.Text = "Convert";
 			this.btnConvert.UseVisualStyleBackColor = true;
-			this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
+			this.btnConvert.Click += new System.EventHandler(this.BtnConvert_Click);
 			// 
 			// label3
 			// 
@@ -104,7 +104,7 @@
 			this.btnRefresh.TabIndex = 6;
 			this.btnRefresh.Text = "Refresh";
 			this.btnRefresh.UseVisualStyleBackColor = true;
-			this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+			this.btnRefresh.Click += new System.EventHandler(this.BtnRefresh_Click);
 			// 
 			// ConvertCerts
 			// 

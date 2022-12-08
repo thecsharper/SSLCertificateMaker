@@ -12,6 +12,7 @@ namespace SSLCertificateMaker
 	{
 		private bool suppressSourceChange = false;
 		Dictionary<string, CertConversionHandler> handlers = new Dictionary<string, CertConversionHandler>();
+
 		public ConvertCerts()
 		{
 			InitializeComponent();
@@ -32,7 +33,9 @@ namespace SSLCertificateMaker
 				foreach (FileInfo fi in new DirectoryInfo(MainForm.CA_DIR).GetFiles())
 				{
 					if (string.Compare(fi.Extension, ".pfx", true) == 0 || string.Compare(fi.Extension, ".key", true) == 0)
-						allCerts.Add(new CertItem("[CA] " + fi.Name, fi.FullName));
+					{
+                        allCerts.Add(new CertItem("[CA] " + fi.Name, fi.FullName));
+                    }
 				}
 
 				foreach (FileInfo fi in new DirectoryInfo(MainForm.CERT_DIR).GetFiles())
@@ -47,7 +50,7 @@ namespace SSLCertificateMaker
 			finally
 			{
 				suppressSourceChange = false;
-				cbConvertSource_SelectedIndexChanged(null, null);
+				CbConvertSource_SelectedIndexChanged(null, null);
 			}
 		}
 		private static void SelectPreviouslySelected(string previouslySelected, ComboBox cb)
@@ -78,7 +81,7 @@ namespace SSLCertificateMaker
 			return null;
 		}
 
-		private void cbConvertSource_SelectedIndexChanged(object sender, EventArgs e)
+		private void CbConvertSource_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (suppressSourceChange)
 				return;
@@ -102,12 +105,12 @@ namespace SSLCertificateMaker
 		}
 
 
-		private void btnRefresh_Click(object sender, EventArgs e)
+		private void BtnRefresh_Click(object sender, EventArgs e)
 		{
 			PopulateSourceDropdown();
 		}
 
-		private void btnConvert_Click(object sender, EventArgs e)
+		private void BtnConvert_Click(object sender, EventArgs e)
 		{
 			string outputHandlerId = (string)cbOutputFormat.SelectedItem;
 			if (outputHandlerId == null)
@@ -124,8 +127,8 @@ namespace SSLCertificateMaker
 				}
 				else
 				{
-					FileInfo fiSrc = new FileInfo(source.FullName);
-					string srcNoExt = fiSrc.FullName.Remove(fiSrc.FullName.Length - fiSrc.Extension.Length);
+					var fiSrc = new FileInfo(source.FullName);
+					var srcNoExt = fiSrc.FullName.Remove(fiSrc.FullName.Length - fiSrc.Extension.Length);
 					outputHandler.WriteOutput(srcNoExt, bundle);
 				}
 			}
@@ -186,6 +189,7 @@ namespace SSLCertificateMaker
 				if (dr != DialogResult.Yes)
 					return;
 			}
+
 			File.WriteAllBytes(fileNameCer, bundle.GetPublicCertAsCerFile());
 			File.WriteAllBytes(fileNameKey, bundle.GetPrivateKeyAsKeyFile());
 		}
@@ -221,8 +225,8 @@ namespace SSLCertificateMaker
 
 			public CertItem(string name, string fullName)
 			{
-				this.Name = name;
-				this.FullName = fullName;
+				Name = name;
+				FullName = fullName;
 			}
 			public override string ToString()
 			{
