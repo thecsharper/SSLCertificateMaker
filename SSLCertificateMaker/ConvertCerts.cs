@@ -7,8 +7,8 @@ using System.Windows.Forms;
 
 namespace SSLCertificateMaker
 {
-	// Some notes about pem files containing multiple objects: https://www.digicert.com/kb/ssl-support/pem-ssl-creation.htm
-	public partial class ConvertCerts : Form
+    // Some notes about pem files containing multiple objects: https://www.digicert.com/kb/ssl-support/pem-ssl-creation.htm
+    public partial class ConvertCerts : Form
 	{
 		private bool suppressSourceChange = false;
 		Dictionary<string, CertConversionHandler> handlers = new Dictionary<string, CertConversionHandler>();
@@ -193,45 +193,7 @@ namespace SSLCertificateMaker
 			File.WriteAllBytes(fileNameCer, bundle.GetPublicCertAsCerFile());
 			File.WriteAllBytes(fileNameKey, bundle.GetPrivateKeyAsKeyFile());
 		}
-		#endregion
 
-		private class CertConversionHandler
-		{
-			public Func<string, CertificateBundle> ReadInput;
-			public Action<string, CertificateBundle> WriteOutput;
-			public string[] fileExtensions;
-
-			public CertConversionHandler(Func<string, CertificateBundle> ReadInput, Action<string, CertificateBundle> WriteOutput, params string[] fileExtensions)
-			{
-				this.ReadInput = ReadInput;
-				this.WriteOutput = WriteOutput;
-				this.fileExtensions = fileExtensions;
-			}
-			public bool IsAllowedSource(string path)
-			{
-				foreach (string extension in fileExtensions)
-				{
-					if (path.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
-						return true;
-				}
-				return false;
-			}
-		}
-
-		private class CertItem
-		{
-			public string Name;
-			public string FullName;
-
-			public CertItem(string name, string fullName)
-			{
-				Name = name;
-				FullName = fullName;
-			}
-			public override string ToString()
-			{
-				return Name;
-			}
-		}
+#endregion
 	}
 }

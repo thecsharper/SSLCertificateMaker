@@ -55,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CertConversionHandler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CertItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="CertMaker.cs" />
     <Compile Include="ChainBuilder.cs" />
     <Compile Include="ConvertCerts.cs">
