@@ -141,7 +141,7 @@
 			this.btnMakeCert.TabIndex = 90;
 			this.btnMakeCert.Text = "Make Certificate";
 			this.btnMakeCert.UseVisualStyleBackColor = true;
-			this.btnMakeCert.Click += new System.EventHandler(this.btnMakeCert_Click);
+			this.btnMakeCert.Click += new System.EventHandler(this.BtnMakeCert_Click);
 			// 
 			// dateFrom
 			// 
@@ -244,7 +244,7 @@
 			this.btnPresetCA.Text = "CA";
 			this.toolTip1.SetToolTip(this.btnPresetCA, "Configure for a new Certificate Authority");
 			this.btnPresetCA.UseVisualStyleBackColor = true;
-			this.btnPresetCA.Click += new System.EventHandler(this.btnPresetCA_Click);
+			this.btnPresetCA.Click += new System.EventHandler(this.BtnPresetCA_Click);
 			// 
 			// btnPresetWebServer
 			// 
@@ -256,7 +256,7 @@
 			this.btnPresetWebServer.Text = "Web Server";
 			this.toolTip1.SetToolTip(this.btnPresetWebServer, "Configure for a new Web Server");
 			this.btnPresetWebServer.UseVisualStyleBackColor = true;
-			this.btnPresetWebServer.Click += new System.EventHandler(this.btnPresetWebServer_Click);
+			this.btnPresetWebServer.Click += new System.EventHandler(this.BtnPresetWebServer_Click);
 			// 
 			// label9
 			// 
@@ -371,7 +371,7 @@
 			this.ddlOutputType.Name = "ddlOutputType";
 			this.ddlOutputType.Size = new System.Drawing.Size(93, 21);
 			this.ddlOutputType.TabIndex = 70;
-			this.ddlOutputType.SelectedIndexChanged += new System.EventHandler(this.ddlOutputType_SelectedIndexChanged);
+			this.ddlOutputType.SelectedIndexChanged += new System.EventHandler(this.DdlOutputType_SelectedIndexChanged);
 			// 
 			// label12
 			// 

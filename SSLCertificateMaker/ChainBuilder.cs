@@ -32,14 +32,18 @@ namespace SSLCertificateMaker
 				}
 			}
 
-			List<X509Certificate> chain = new List<X509Certificate>();
+			var chain = new List<X509Certificate>();
 			while (root != null)
 			{
 				chain.Add(root.cert);
 				if (root.issuer == root)
-					break;
+				{
+                    break;
+                }
+					
 				root = root.issuer;
 			}
+
 			return chain.ToArray();
 		}
 		private class ChainLink
