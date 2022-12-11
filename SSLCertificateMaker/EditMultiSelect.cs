@@ -31,6 +31,7 @@ namespace SSLCertificateMaker
                 return s;
 			}
 		}
+
 		public EditMultiSelect(string title, object[] items, bool[] selectedIndices)
 		{
 			InitializeComponent();
@@ -47,14 +48,14 @@ namespace SSLCertificateMaker
             }
         }
 
-		private void btnOK_Click(object sender, EventArgs e)
+		private void BtnOK_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
 			OkWasClicked = true;
 			Close();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
+		private void BtnCancel_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();

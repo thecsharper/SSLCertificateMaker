@@ -119,9 +119,11 @@ namespace SSLCertificateMaker
                 StartProgress();
                 SetStatus("Initializing background thread");
 
-                worker = new Thread(MakeCertificate);
-                worker.IsBackground = true;
-                worker.Name = "Make Certificate";
+                worker = new Thread(MakeCertificate)
+                {
+                    IsBackground = true,
+                    Name = "Make Certificate"
+                };
                 worker.Start(args);
             }
             else
@@ -157,7 +159,7 @@ namespace SSLCertificateMaker
                 MakeCertArgs args = (MakeCertArgs)Argument;
 
                 // Verify that the files do not already exist
-                string safeFileName = Path.Combine(args.OutputPath, SafeFileName(args.domains[0]));
+                var safeFileName = Path.Combine(args.OutputPath, SafeFileName(args.domains[0]));
                 if (args.saveCerAndKey)
                 {
                     if (File.Exists(safeFileName + ".cer"))
