@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SSLCertificateMaker
@@ -31,22 +24,22 @@ namespace SSLCertificateMaker
 		public TextInputPrompt(string title = "Text Input Prompt", string labelText = "Enter some text:")
 		{
 			InitializeComponent();
-			this.Text = title;
+			Text = title;
 			lblTextInputPrompt.Text = labelText;
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
+		private void BtnOk_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			OkWasClicked = true;
-			this.Close();
+			Close();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
+		private void BtnCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 			txtInput.Clear();
-			this.Close();
+			Close();
 		}
 	}
 }
