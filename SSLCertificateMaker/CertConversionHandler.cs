@@ -21,8 +21,11 @@ namespace SSLCertificateMaker
 				foreach (string extension in fileExtensions)
 				{
 					if (path.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
-						return true;
+					{
+                        return true;
+                    }
 				}
+
 				return false;
 			}
 		}
