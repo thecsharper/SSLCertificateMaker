@@ -59,7 +59,7 @@
 			this.btnOk.TabIndex = 3;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
 			// 
 			// btnCancel
 			// 
@@ -70,7 +70,7 @@
 			this.btnCancel.TabIndex = 4;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+			this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
 			// 
 			// cbMask
 			// 
@@ -81,7 +81,7 @@
 			this.cbMask.TabIndex = 2;
 			this.cbMask.Text = "Mask Password Input";
 			this.cbMask.UseVisualStyleBackColor = true;
-			this.cbMask.CheckedChanged += new System.EventHandler(this.cbMask_CheckedChanged);
+			this.cbMask.CheckedChanged += new System.EventHandler(this.CbMask_CheckedChanged);
 			// 
 			// PasswordPrompt
 			// 
