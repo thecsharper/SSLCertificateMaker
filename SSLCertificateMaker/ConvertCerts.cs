@@ -120,7 +120,7 @@ namespace SSLCertificateMaker
 			{
 				CertConversionHandler inputHandler = FindInputHandlerForSource(source.FullName);
 				CertConversionHandler outputHandler = handlers[outputHandlerId];
-				CertificateBundle bundle = inputHandler.ReadInput(source.FullName);
+				CertificateBundle bundle = inputHandler._readInput(source.FullName);
 				if (bundle == null)
 				{
 					MessageBox.Show("Unable to read source file(s). Aborting conversion.");
@@ -129,7 +129,7 @@ namespace SSLCertificateMaker
 				{
 					var fiSrc = new FileInfo(source.FullName);
 					var srcNoExt = fiSrc.FullName.Remove(fiSrc.FullName.Length - fiSrc.Extension.Length);
-					outputHandler.WriteOutput(srcNoExt, bundle);
+					outputHandler._writeOutput(srcNoExt, bundle);
 				}
 			}
 		}
