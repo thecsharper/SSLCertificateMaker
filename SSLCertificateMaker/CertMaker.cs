@@ -351,15 +351,21 @@ namespace SSLCertificateMaker
 					Pkcs12Store pkcs12Store = new Pkcs12Store(fileStream, password == null ? null : password.ToCharArray());
 					foreach (string alias in pkcs12Store.Aliases)
 					{
-						CertificateBundle b = new CertificateBundle();
-						X509Certificate[] pfxChain = pkcs12Store.GetCertificateChain(alias).Select(e => e.Certificate).ToArray();
-						b.cert = pfxChain.First();
-						b.privateKey = pkcs12Store.GetKey(alias)?.Key;
-						X509Certificate[] fullchain = ChainBuilder.BuildChain(b.cert, pfxChain.Skip(1));
-						b.chain = fullchain.Skip(1).ToArray();
-						if (b.cert != null && b.privateKey != null)
-							return b;
+						var certificateBundle = new CertificateBundle();
+						var pfxChain = pkcs12Store.GetCertificateChain(alias).Select(e => e.Certificate).ToArray();
+						
+						certificateBundle.cert = pfxChain.First();
+						certificateBundle.privateKey = pkcs12Store.GetKey(alias)?.Key;
+						
+						var fullchain = ChainBuilder.BuildChain(certificateBundle.cert, pfxChain.Skip(1));
+						certificateBundle.chain = fullchain.Skip(1).ToArray();
+
+						if (certificateBundle.cert != null && certificateBundle.privateKey != null)
+						{
+							return certificateBundle;
+						}
 					}
+
 					return null;
 				}
 			}
@@ -368,6 +374,7 @@ namespace SSLCertificateMaker
 				return null;
 			}
 		}
+
 		/// <summary>
 		/// Returns true of the certificate has the public key that matches the private key. Supports RSA, DSA, and EC keys.
 		/// </summary>
@@ -376,11 +383,11 @@ namespace SSLCertificateMaker
 		/// <returns></returns>
 		private static bool DoesCertificateMatchKey(X509Certificate cert, AsymmetricKeyParameter privKey)
 		{
-			AsymmetricKeyParameter pubKey = cert.GetPublicKey();
-			if (pubKey is RsaKeyParameters && privKey is RsaPrivateCrtKeyParameters)
+			var pubKey = cert.GetPublicKey();
+			if (pubKey is RsaKeyParameters parameters && privKey is RsaPrivateCrtKeyParameters parameters1)
 			{
-				RsaKeyParameters a = (RsaKeyParameters)pubKey;
-				RsaPrivateCrtKeyParameters b = (RsaPrivateCrtKeyParameters)privKey;
+				RsaKeyParameters a = parameters;
+				RsaPrivateCrtKeyParameters b = parameters1;
 				return a.Exponent.Equals(b.PublicExponent) && a.Modulus.Equals(b.Modulus);
 			}
 			else if (pubKey is DsaPublicKeyParameters && privKey is DsaPrivateKeyParameters)
