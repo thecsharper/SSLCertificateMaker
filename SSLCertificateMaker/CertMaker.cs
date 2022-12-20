@@ -223,21 +223,31 @@ namespace SSLCertificateMaker
 		public X509Certificate cert;
 		public AsymmetricKeyParameter privateKey;
 		public X509Certificate[] chain = new X509Certificate[0];
+		
 		public CertificateBundle() { }
+		
 		public CertificateBundle(X509Certificate cert, AsymmetricKeyParameter privateKey)
 		{
 			this.cert = cert;
 			this.privateKey = privateKey;
 		}
+		
 		public string GetSubjectName()
 		{
 			if (cert == null)
-				return "Unknown";
-			string subject = cert.SubjectDN.ToString();
+			{
+                return "Unknown";
+            }
+				
+			var subject = cert.SubjectDN.ToString();
 			if (subject.StartsWith("cn=", StringComparison.OrdinalIgnoreCase))
-				subject = subject.Substring(3);
+			{
+                subject = subject.Substring(3);
+            }
+			
 			return subject;
 		}
+		
 		/// <summary>
 		/// Gets the certificate and chain concatenated into a single .pem file (DER → Base64 → ASCII).  Each certificate is the issuer of the certificate before it.
 		/// </summary>
@@ -246,30 +256,34 @@ namespace SSLCertificateMaker
 		{
 			using (TextWriter textWriter = new StringWriter())
 			{
-				PemWriter pemWriter = new PemWriter(textWriter);
+				var pemWriter = new PemWriter(textWriter);
 				pemWriter.WriteObject(cert);
 				foreach (X509Certificate link in chain)
-					pemWriter.WriteObject(link);
+				{
+                    pemWriter.WriteObject(link);
+                }
 				pemWriter.Writer.Flush();
-				string strKey = textWriter.ToString();
+				var strKey = textWriter.ToString();
 				return Encoding.ASCII.GetBytes(strKey);
 			}
 		}
+		
 		/// <summary>
 		/// Gets the private key as a .pem file (DER → Base64 → ASCII).
 		/// </summary>
 		/// <returns></returns>
 		public byte[] GetPrivateKeyAsKeyFile()
 		{
-			using (TextWriter textWriter = new StringWriter())
+			using (var textWriter = new StringWriter())
 			{
-				PemWriter pemWriter = new PemWriter(textWriter);
+				var pemWriter = new PemWriter(textWriter);
 				pemWriter.WriteObject(privateKey);
 				pemWriter.Writer.Flush();
-				string strKey = textWriter.ToString();
+				var strKey = textWriter.ToString();
 				return Encoding.ASCII.GetBytes(strKey);
 			}
 		}
+		
 		/// <summary>
 		/// Exports the certificate as a pfx file, optionally including the private key.
 		/// </summary>
@@ -277,18 +291,20 @@ namespace SSLCertificateMaker
 		/// <returns></returns>
 		public byte[] GetPfx(string password)
 		{
-			string subject = GetSubjectName();
-			Pkcs12Store pkcs12Store = new Pkcs12Store();
-			X509CertificateEntry certEntry = new X509CertificateEntry(cert);
-			X509CertificateEntry[] chainEntry = new X509CertificateEntry[] { certEntry }.Concat(chain.Select(c => new X509CertificateEntry(c))).ToArray();
+			var subject = GetSubjectName();
+			var pkcs12Store = new Pkcs12Store();
+			var certEntry = new X509CertificateEntry(cert);
+			var chainEntry = new X509CertificateEntry[] { certEntry }.Concat(chain.Select(c => new X509CertificateEntry(c))).ToArray();
 			pkcs12Store.SetCertificateEntry(subject, certEntry);
 			pkcs12Store.SetKeyEntry(subject, new AsymmetricKeyEntry(privateKey), chainEntry);
-			using (MemoryStream pfxStream = new MemoryStream())
+			
+			using (var pfxStream = new MemoryStream())
 			{
-				pkcs12Store.Save(pfxStream, password == null ? null : password.ToCharArray(), CertMaker.secureRandom);
+				pkcs12Store.Save(pfxStream, password?.ToCharArray(), CertMaker.secureRandom);
 				return pfxStream.ToArray();
 			}
 		}
+		
 		/// <summary>
 		/// Loads a CertificateBundle from .cer and .key files.
 		/// </summary>
@@ -297,43 +313,54 @@ namespace SSLCertificateMaker
 		/// <returns></returns>
 		public static CertificateBundle LoadFromCerAndKeyFiles(string publicCer, string privateKey)
 		{
-			string[] pemFilePaths = new string[] { publicCer, privateKey };
+			var pemFilePaths = new string[] { publicCer, privateKey };
 			AsymmetricKeyParameter key = null;
-			List<X509Certificate> certs = new List<X509Certificate>();
+			var certs = new List<X509Certificate>();
 			foreach (string path in pemFilePaths)
 			{
 				if (path != null && File.Exists(path))
 				{
-					using (StreamReader sr = new StreamReader(path, Encoding.ASCII))
+					using (var sr = new StreamReader(path, Encoding.ASCII))
 					{
-						PemReader reader = new PemReader(sr);
+						var reader = new PemReader(sr);
 						object obj = reader.ReadObject();
 						while (obj != null)
 						{
-							if (obj is AsymmetricCipherKeyPair)
+							if (obj is AsymmetricCipherKeyPair) 
+							{ 
 								key = ((AsymmetricCipherKeyPair)obj).Private;
-							else if (obj is X509Certificate)
+                            }
+                            else if (obj is X509Certificate) { 
 								certs.Add((X509Certificate)obj);
+                            }
 
-							obj = reader.ReadObject();
+                            obj = reader.ReadObject();
 						}
 					}
 				}
 			}
+
 			if (key == null)
-				throw new ApplicationException("Private key was not found in input files \"" + string.Join("\", \"", pemFilePaths) + "\"");
+			{
+                throw new ApplicationException("Private key was not found in input files \"" + string.Join("\", \"", pemFilePaths) + "\"");
+            }
 
-			X509Certificate primary = certs.FirstOrDefault(c => DoesCertificateMatchKey(c, key));
+			var primary = certs.FirstOrDefault(c => DoesCertificateMatchKey(c, key));
 			if (primary == null)
-				throw new ApplicationException("The public key matching the private key was not found in input files \"" + string.Join("\", \"", pemFilePaths) + "\"");
+			{
+                throw new ApplicationException("The public key matching the private key was not found in input files \"" + string.Join("\", \"", pemFilePaths) + "\"");
+            }
 
-			X509Certificate[] fullchain = ChainBuilder.BuildChain(primary, certs.Where(c => c != primary));
+            var fullchain = ChainBuilder.BuildChain(primary, certs.Where(c => c != primary));
 
-			CertificateBundle b = new CertificateBundle();
-			b.cert = fullchain[0];
-			b.chain = fullchain.Skip(1).ToArray();
-			b.privateKey = key;
-			return b;
+            var b = new CertificateBundle
+            {
+                cert = fullchain[0],
+                chain = fullchain.Skip(1).ToArray(),
+                privateKey = key
+            };
+
+            return b;
 		}
 
 		/// <summary>
@@ -404,6 +431,7 @@ namespace SSLCertificateMaker
 			}
 			return false;
 		}
+
 		/// <summary>
 		/// Sets the <see cref="chain"/> field to the issuer's certificate and chain.
 		/// </summary>
