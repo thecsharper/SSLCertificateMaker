@@ -26,21 +26,23 @@ namespace SSLCertificateMaker
 
 		private static AsymmetricCipherKeyPair GenerateRsaKeyPair(int length)
 		{
-			KeyGenerationParameters keygenParam = new KeyGenerationParameters(secureRandom, length);
+			var keygenParam = new KeyGenerationParameters(secureRandom, length);
 
-			RsaKeyPairGenerator keyGenerator = new RsaKeyPairGenerator();
+			var keyGenerator = new RsaKeyPairGenerator();
 			keyGenerator.Init(keygenParam);
+			
 			return keyGenerator.GenerateKeyPair();
 		}
 
 		private static AsymmetricCipherKeyPair GenerateEcKeyPair(string curveName)
 		{
-			X9ECParameters ecParam = SecNamedCurves.GetByName(curveName);
-			ECDomainParameters ecDomain = new ECDomainParameters(ecParam.Curve, ecParam.G, ecParam.N);
-			ECKeyGenerationParameters keygenParam = new ECKeyGenerationParameters(ecDomain, secureRandom);
+			var ecParam = SecNamedCurves.GetByName(curveName);
+			var ecDomain = new ECDomainParameters(ecParam.Curve, ecParam.G, ecParam.N);
+			var keygenParam = new ECKeyGenerationParameters(ecDomain, secureRandom);
 
-			ECKeyPairGenerator keyGenerator = new ECKeyPairGenerator();
+			var keyGenerator = new ECKeyPairGenerator();
 			keyGenerator.Init(keygenParam);
+			
 			return keyGenerator.GenerateKeyPair();
 		}
 
@@ -258,10 +260,12 @@ namespace SSLCertificateMaker
 			{
 				var pemWriter = new PemWriter(textWriter);
 				pemWriter.WriteObject(cert);
+				
 				foreach (X509Certificate link in chain)
 				{
                     pemWriter.WriteObject(link);
                 }
+				
 				pemWriter.Writer.Flush();
 				var strKey = textWriter.ToString();
 				return Encoding.ASCII.GetBytes(strKey);
