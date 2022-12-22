@@ -83,27 +83,32 @@ namespace SSLCertificateMaker
 
 			if (issuerPublic != null)
 			{
-				AuthorityKeyIdentifierStructure akis = new AuthorityKeyIdentifierStructure(issuerPublic);
+				var akis = new AuthorityKeyIdentifierStructure(issuerPublic);
 				certGenerator.AddExtension(X509Extensions.AuthorityKeyIdentifier, false, akis);
 			}
 
 			// Subject Key Identifier
-			SubjectKeyIdentifierStructure skis = new SubjectKeyIdentifierStructure(subjectPublic);
+			var skis = new SubjectKeyIdentifierStructure(subjectPublic);
 			certGenerator.AddExtension(X509Extensions.SubjectKeyIdentifier, false, skis);
 
 			if (!isCA || args.domains.Length > 1)
 			{
 				// Add SANs (Subject Alternative Names)
-				GeneralName[] names = args.domains.Select(domain => new GeneralName(GeneralName.DnsName, domain)).ToArray();
-				GeneralNames subjectAltName = new GeneralNames(names);
+				var names = args.domains.Select(domain => new GeneralName(GeneralName.DnsName, domain)).ToArray();
+				var subjectAltName = new GeneralNames(names);
 				certGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, subjectAltName);
 			}
 
 			// Specify allowed key usage
 			if (args.KeyUsage != 0)
-				certGenerator.AddExtension(X509Extensions.KeyUsage, true, new KeyUsage(args.KeyUsage));
+			{
+                certGenerator.AddExtension(X509Extensions.KeyUsage, true, new KeyUsage(args.KeyUsage));
+            }
+				
 			if (args.ExtendedKeyUsage.Length != 0)
-				certGenerator.AddExtension(X509Extensions.ExtendedKeyUsage, false, new ExtendedKeyUsage(args.ExtendedKeyUsage));
+			{
+                certGenerator.AddExtension(X509Extensions.ExtendedKeyUsage, false, new ExtendedKeyUsage(args.ExtendedKeyUsage));
+            }
 
 			// Specify Basic Constraints
 			certGenerator.AddExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(isCA));
@@ -122,6 +127,7 @@ namespace SSLCertificateMaker
 			signer.BlockUpdate(tbsCert, 0, tbsCert.Length);
 			return signer.VerifySignature(sig);
 		}
+
 		private static bool IsSelfSigned(X509Certificate cert)
 		{
 			return ValidateCert(cert, cert.GetPublicKey());
@@ -163,7 +169,6 @@ namespace SSLCertificateMaker
 		//	return result.CertPath.Certificates.Cast<X509Certificate>();
 		//}
 
-		#region Public Methods
 		/// <summary>
 		/// Generates a self-signed certificate.
 		/// </summary>
@@ -174,8 +179,8 @@ namespace SSLCertificateMaker
 		/// <returns></returns>
 		public static CertificateBundle GetCertificateSignedBySelf(MakeCertArgs args)
 		{
-			AsymmetricCipherKeyPair keys = GenerateRsaKeyPair(args.keyStrength);
-			X509Certificate cert = GenerateCertificate(args, keys.Public, args.domains[0], null, keys.Private);
+			var keys = GenerateRsaKeyPair(args.keyStrength);
+			var cert = GenerateCertificate(args, keys.Public, args.domains[0], null, keys.Private);
 
 			return new CertificateBundle(cert, keys.Private);
 		}
@@ -191,12 +196,12 @@ namespace SSLCertificateMaker
 		/// <returns></returns>
 		public static CertificateBundle GetCertificateSignedByCA(MakeCertArgs args, CertificateBundle ca)
 		{
-			AsymmetricCipherKeyPair keys = GenerateRsaKeyPair(args.keyStrength);
-			X509Certificate cert = GenerateCertificate(args, keys.Public, ca.GetSubjectName(), ca.cert.GetPublicKey(), ca.privateKey);
+			var keys = GenerateRsaKeyPair(args.keyStrength);
+			var cert = GenerateCertificate(args, keys.Public, ca.GetSubjectName(), ca.cert.GetPublicKey(), ca.privateKey);
 
-			CertificateBundle b = new CertificateBundle(cert, keys.Private);
-			b.SetIssuerBundle(ca);
-			return b;
+			var certificateBundle = new CertificateBundle(cert, keys.Private);
+            certificateBundle.SetIssuerBundle(ca);
+			return certificateBundle;
 		}
 
 		///// <summary>
@@ -217,7 +222,6 @@ namespace SSLCertificateMaker
 
 		//	return new CertificateBundle(cert, keys.Private);
 		//}
-		#endregion
 	}
 
 	public class CertificateBundle
