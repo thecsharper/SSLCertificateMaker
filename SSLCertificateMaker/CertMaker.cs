@@ -421,22 +421,26 @@ namespace SSLCertificateMaker
 			var pubKey = cert.GetPublicKey();
 			if (pubKey is RsaKeyParameters parameters && privKey is RsaPrivateCrtKeyParameters parameters1)
 			{
-				RsaKeyParameters a = parameters;
-				RsaPrivateCrtKeyParameters b = parameters1;
+				var a = parameters;
+				var b = parameters1;
+				
 				return a.Exponent.Equals(b.PublicExponent) && a.Modulus.Equals(b.Modulus);
 			}
 			else if (pubKey is DsaPublicKeyParameters && privKey is DsaPrivateKeyParameters)
 			{
-				DsaPublicKeyParameters a = (DsaPublicKeyParameters)pubKey;
-				DsaPrivateKeyParameters b = (DsaPrivateKeyParameters)privKey;
+				var a = (DsaPublicKeyParameters)pubKey;
+                var b = (DsaPrivateKeyParameters)privKey;
+				
 				return a.Y.Equals(b.Parameters.G.ModPow(b.X, b.Parameters.P));
 			}
 			else if (pubKey is ECPublicKeyParameters && privKey is ECPrivateKeyParameters)
 			{
-				ECPublicKeyParameters a = (ECPublicKeyParameters)pubKey;
-				ECPrivateKeyParameters b = (ECPrivateKeyParameters)privKey;
+				var a = (ECPublicKeyParameters)pubKey;
+				var b = (ECPrivateKeyParameters)privKey;
+				
 				return a.Q.Equals(b.Parameters.G.Multiply(b.D));
 			}
+
 			return false;
 		}
 
