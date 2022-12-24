@@ -27,9 +27,9 @@ namespace SSLCertificateMaker
 			suppressSourceChange = true;
 			try
 			{
-				string previouslySelected = cbConvertSource.SelectedItem?.ToString();
+				var previouslySelected = cbConvertSource.SelectedItem?.ToString();
 				cbConvertSource.Items.Clear();
-				List<CertItem> allCerts = new List<CertItem>();
+				var allCerts = new List<CertItem>();
 				foreach (FileInfo fi in new DirectoryInfo(MainForm.CA_DIR).GetFiles())
 				{
 					if (string.Compare(fi.Extension, ".pfx", true) == 0 || string.Compare(fi.Extension, ".key", true) == 0)
@@ -85,11 +85,11 @@ namespace SSLCertificateMaker
 		{
 			if (suppressSourceChange)
 				return;
-			string previouslySelected = (string)cbOutputFormat.SelectedItem;
+			var previouslySelected = (string)cbOutputFormat.SelectedItem;
 			cbOutputFormat.Items.Clear();
 
 			// Figure out which method IDs are allowed
-			List<string> allowedOutputHandlerIDs = new List<string>();
+			var allowedOutputHandlerIDs = new List<string>();
 			if (cbConvertSource.Items.Count > 0)
 			{
 				CertItem source = (CertItem)cbConvertSource.SelectedItem;
@@ -99,6 +99,7 @@ namespace SSLCertificateMaker
 						allowedOutputHandlerIDs.Add(kvp.Key);
 				}
 			}
+
 			allowedOutputHandlerIDs.Sort();
 			cbOutputFormat.Items.AddRange(allowedOutputHandlerIDs.ToArray());
 			SelectPreviouslySelected(previouslySelected, cbOutputFormat);
@@ -112,10 +113,10 @@ namespace SSLCertificateMaker
 
 		private void BtnConvert_Click(object sender, EventArgs e)
 		{
-			string outputHandlerId = (string)cbOutputFormat.SelectedItem;
+			var outputHandlerId = (string)cbOutputFormat.SelectedItem;
 			if (outputHandlerId == null)
 				return;
-			CertItem source = (CertItem)cbConvertSource.SelectedItem;
+			var source = (CertItem)cbConvertSource.SelectedItem;
 			if (!string.IsNullOrWhiteSpace(source.FullName))
 			{
 				CertConversionHandler inputHandler = FindInputHandlerForSource(source.FullName);
@@ -134,7 +135,6 @@ namespace SSLCertificateMaker
 			}
 		}
 
-		#region PFX handlers
 		private CertificateBundle InputPfx(string sourcePath)
 		{
 			CertificateBundle bundle = null;
@@ -154,6 +154,7 @@ namespace SSLCertificateMaker
 			}
 			return bundle;
 		}
+
 		private void OutputPfx(string fullNameWithoutExtension, CertificateBundle bundle)
 		{
 			string fileName = fullNameWithoutExtension + ".pfx";
@@ -165,14 +166,14 @@ namespace SSLCertificateMaker
 			}
 			File.WriteAllBytes(fullNameWithoutExtension + ".pfx", bundle.GetPfx(null));
 		}
-		#endregion
-		#region CER and KEY handlers
+		
 		private CertificateBundle InputCerAndKey(string keySourcePath)
 		{
 			string cerSourcePath = keySourcePath.EndsWith(".key", StringComparison.OrdinalIgnoreCase) ? keySourcePath.Remove(keySourcePath.Length - 4) + ".cer" : null;
 			CertificateBundle bundle = CertificateBundle.LoadFromCerAndKeyFiles(cerSourcePath, keySourcePath);
 			return bundle;
 		}
+		
 		private void OutputCerAndKey(string fullNameWithoutExtension, CertificateBundle bundle)
 		{
 			string fileNameCer = fullNameWithoutExtension + ".cer";
@@ -193,7 +194,5 @@ namespace SSLCertificateMaker
 			File.WriteAllBytes(fileNameCer, bundle.GetPublicCertAsCerFile());
 			File.WriteAllBytes(fileNameKey, bundle.GetPrivateKeyAsKeyFile());
 		}
-
-#endregion
 	}
 }

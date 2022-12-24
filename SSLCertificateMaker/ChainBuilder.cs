@@ -17,12 +17,12 @@ namespace SSLCertificateMaker
 		/// <returns></returns>
 		public static X509Certificate[] BuildChain(X509Certificate cert, IEnumerable<X509Certificate> unorderedChain)
 		{
-			ChainLink root = new ChainLink(cert);
+			var root = new ChainLink(cert);
 			IEnumerable<ChainLink> allLinks = unorderedChain
 				.Select(c => new ChainLink(c))
 				.Concat(new ChainLink[] { root }).ToArray();
 
-			Dictionary<string, ChainLink> uidMap = allLinks.ToDictionary(c => c.cert.SubjectDN.ToString());
+			var uidMap = allLinks.ToDictionary(c => c.cert.SubjectDN.ToString());
 
 			foreach (ChainLink l in allLinks)
 			{

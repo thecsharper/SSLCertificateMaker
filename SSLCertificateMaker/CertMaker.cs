@@ -73,7 +73,7 @@ namespace SSLCertificateMaker
 					issuerPrivate);
 			}
 
-			X509V3CertificateGenerator certGenerator = new X509V3CertificateGenerator();
+			var certGenerator = new X509V3CertificateGenerator();
 			certGenerator.SetIssuerDN(new X509Name("CN=" + issuerName));
 			certGenerator.SetSubjectDN(new X509Name("CN=" + args.domains[0]));
 			certGenerator.SetSerialNumber(BigInteger.ProbablePrime(120, new Random()));
@@ -260,7 +260,7 @@ namespace SSLCertificateMaker
 		/// <returns></returns>
 		public byte[] GetPublicCertAsCerFile()
 		{
-			using (TextWriter textWriter = new StringWriter())
+			using (var textWriter = new StringWriter())
 			{
 				var pemWriter = new PemWriter(textWriter);
 				pemWriter.WriteObject(cert);
@@ -381,9 +381,9 @@ namespace SSLCertificateMaker
 		{
 			try
 			{
-				using (Stream fileStream = File.OpenRead(filePath))
+				using (var fileStream = File.OpenRead(filePath))
 				{
-					Pkcs12Store pkcs12Store = new Pkcs12Store(fileStream, password == null ? null : password.ToCharArray());
+					var pkcs12Store = new Pkcs12Store(fileStream, password == null ? null : password.ToCharArray());
 					foreach (string alias in pkcs12Store.Aliases)
 					{
 						var certificateBundle = new CertificateBundle();
