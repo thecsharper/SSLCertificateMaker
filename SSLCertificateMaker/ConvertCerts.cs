@@ -57,7 +57,7 @@ namespace SSLCertificateMaker
 		{
 			if (previouslySelected != null)
 			{
-				for (int i = 0; i < cb.Items.Count; i++) { 
+				for (var i = 0; i < cb.Items.Count; i++) { 
 					if (cb.Items[i].ToString() == previouslySelected)
 					{
 						cb.SelectedIndex = i;
@@ -65,9 +65,13 @@ namespace SSLCertificateMaker
 					}
                 }
             }
+
 			if (cb.Items.Count > 0)
-				cb.SelectedIndex = 0;
+			{
+                cb.SelectedIndex = 0;
+            }
 		}
+
 		private CertConversionHandler FindInputHandlerForSource(string sourcePath)
 		{
 			foreach (KeyValuePair<string, CertConversionHandler> kvp in handlers)
@@ -84,7 +88,10 @@ namespace SSLCertificateMaker
 		private void CbConvertSource_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (suppressSourceChange)
+			{
 				return;
+			}
+
 			var previouslySelected = (string)cbOutputFormat.SelectedItem;
 			cbOutputFormat.Items.Clear();
 
@@ -96,7 +103,9 @@ namespace SSLCertificateMaker
 				foreach (KeyValuePair<string, CertConversionHandler> kvp in handlers)
 				{
 					if (!kvp.Value.IsAllowedSource(source.FullName))
-						allowedOutputHandlerIDs.Add(kvp.Key);
+					{
+                        allowedOutputHandlerIDs.Add(kvp.Key);
+                    }
 				}
 			}
 
@@ -104,7 +113,6 @@ namespace SSLCertificateMaker
 			cbOutputFormat.Items.AddRange(allowedOutputHandlerIDs.ToArray());
 			SelectPreviouslySelected(previouslySelected, cbOutputFormat);
 		}
-
 
 		private void BtnRefresh_Click(object sender, EventArgs e)
 		{
@@ -115,7 +123,10 @@ namespace SSLCertificateMaker
 		{
 			var outputHandlerId = (string)cbOutputFormat.SelectedItem;
 			if (outputHandlerId == null)
-				return;
+			{
+                return;
+            }
+				
 			var source = (CertItem)cbConvertSource.SelectedItem;
 			if (!string.IsNullOrWhiteSpace(source.FullName))
 			{
@@ -157,7 +168,7 @@ namespace SSLCertificateMaker
 
 		private void OutputPfx(string fullNameWithoutExtension, CertificateBundle bundle)
 		{
-			string fileName = fullNameWithoutExtension + ".pfx";
+			var fileName = fullNameWithoutExtension + ".pfx";
 			if (File.Exists(fileName))
 			{
 				DialogResult dr = MessageBox.Show("Output file \"" + fileName + "\" already exists.  Overwrite?", "Overwrite existing file?", MessageBoxButtons.YesNo);
@@ -169,21 +180,21 @@ namespace SSLCertificateMaker
 		
 		private CertificateBundle InputCerAndKey(string keySourcePath)
 		{
-			string cerSourcePath = keySourcePath.EndsWith(".key", StringComparison.OrdinalIgnoreCase) ? keySourcePath.Remove(keySourcePath.Length - 4) + ".cer" : null;
+			var cerSourcePath = keySourcePath.EndsWith(".key", StringComparison.OrdinalIgnoreCase) ? keySourcePath.Remove(keySourcePath.Length - 4) + ".cer" : null;
 			CertificateBundle bundle = CertificateBundle.LoadFromCerAndKeyFiles(cerSourcePath, keySourcePath);
 			return bundle;
 		}
 		
 		private void OutputCerAndKey(string fullNameWithoutExtension, CertificateBundle bundle)
 		{
-			string fileNameCer = fullNameWithoutExtension + ".cer";
+			var fileNameCer = fullNameWithoutExtension + ".cer";
 			if (File.Exists(fileNameCer))
 			{
 				DialogResult dr = MessageBox.Show("Output file \"" + fileNameCer + "\" already exists.  Overwrite?", "Overwrite existing file?", MessageBoxButtons.YesNo);
 				if (dr != DialogResult.Yes)
 					return;
 			}
-			string fileNameKey = fullNameWithoutExtension + ".key";
+			var fileNameKey = fullNameWithoutExtension + ".key";
 			if (File.Exists(fileNameKey))
 			{
 				DialogResult dr = MessageBox.Show("Output file \"" + fileNameKey + "\" already exists.  Overwrite?", "Overwrite existing file?", MessageBoxButtons.YesNo);
